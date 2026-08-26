@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<link rel="stylesheet" href="css/style.css">
+</head>
 
 
 <style>
 * {box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif;}
 
 body{
-background-color: #5c5c5c;
+background-color: #e9c1e6;
 display: flex;
 justify-content: center;
 align-items: center;
@@ -40,8 +39,8 @@ gap: 18px;
 }
 
 .box{
-background-color: aquamarine;
-border: 6px solid red;
+background-color: rgb(214, 133, 206);
+border: 6px solid rgb(227, 92, 194);
 border-radius: 15px;
 padding: 20px;
 display: flex;
@@ -64,14 +63,14 @@ margin-bottom: 12px;
 /* painel esquerdo - local (guicho ou consultorio) */
 .local-box {flex: 1; }
 .local-number {
-color: red;
+color: rgb(244, 115, 164);
 font-size: 9vw;
 font-weight: bold;
 line-height: 1;
 }
 
 .local-type {
-color: #5c5c5c;
+color: #f37bcd;
 font-size: 1.8vw;
 font-weight: bold;
 margin-top: 6px;
@@ -87,7 +86,7 @@ align-items: center;
 #history-list{
 list-style: none;
 width: 100%;
-color: red;
+color: rgb(239, 151, 201);
 font-size: 1.5vw;
 font-weight: bold;
 text-align: left;
@@ -103,7 +102,7 @@ text-align: left;
 /* painel direito - nome do paciente */
  .patient-box {flex: 3; }
  .name-patient {
-color: red;
+color: rgb(255, 137, 222);
 font-size: 6.5vw ;
 font-weight: bold;
 line-height: 1.2;
@@ -114,7 +113,7 @@ word-break: break-word;
  .logo-box {flex: 1;}
  .logo-text {
 
-    color: magenta;
+    color: rgb(231, 156, 206);
     font-size: 3.5vw;
     font-weight: bold;
     text-transform: uppercase;
@@ -154,56 +153,60 @@ word-break: break-word;
         <div class="patient-name" id="patient-name">AGUARDANDO...</div>
       </div>
       <div class="box logo-box">
-<div class="logo-text">🏥 Sistema hospitalar</div>
-
+<div class="logo-text">
+    <img src="img/hospitallogo.png">
+    <span>Sistema hospitalar</span>
+</div>
       </div>
         </div>
           </div>
+<script>
+let ultimold = null;
+// função e o historico da T
 
-          <script>
-            let ultimold = null;
-            // função e o historico da TV em tempo real.
-            function atualizar() {
-                fetch("/tv/chamado");
-                then(r => r.json())
-                .then(data => {
-            const chamada = data.chamada;
-            const historico = data.historico || [];
+function atualizar() {
+    fetch("/tv/chamado")
+    .then(r => r.json())
+    .then(data => {
+const chamada = data.chamada;
+const historico = data.historico || [];
 
-               if (chamada){
-            document.getElementById("local-tipe").innerText = chamada.localtipo || "GUICHE";
-            document.getElementById("local-numero").innerText = chamada.localtipo || "...";
-            document.getElementById("patient-name").innerText = chamada.localtipo || "AGUARDANDO..."
+    if (chamada) {
+document.getElementById("local-tipo").innerText = chamada.localtipo || "GUICHE";
+document.getElementById("local-numero").innerText = chamada.localtipo || "...";
+document.getElementById("patient-name").innerText = chamada.localtipo || "AGUARDANDO...";
 
+//flash visual quando ha chamada nova
 
-            //flash visual quando ha chamada nova
+if(chamada.id !==ultimold){
+    ultimold = chamada.id;
+    const patientBox = document.querySelector(".patient-box");
+    patientBox.classList.remove("flash");
+    void patientBox.offseWidth;
+    patientBox.classList.add("flash");
+}
+    }
 
-            if(chamada.id !==ultimold){
-                ultimold = chamada.id
-                const patientBox = document.querySelector(".patient-box");
-                patientBox.classList.remove("flash");
-                void patientBox.offsetWidth; // reflow
-                patientBox.classList.add("flash")
-        }
-             }
+//historico 
+const list = document.getElementById(history-list);
+list.innerHTML = "";
+historico.slice(0, 4).forEach( h => {
+    const li = document.createElement("li");
+    const tipo = h.localTipo ? h.localTipo.substring(0,4) : "GUIC";
+    li.innerText = `$(tipo).$(h.localNumero) - $(h.patient)`;
+    list.appendChild(li);
+});
+})
 
-             //historico
-             const list = document.getElementById("history-list");
-             list.innerHTML = "";
-             historico.slice(0, 4).forEach(h => {
-                const li = document.createElement("li");
-                const tipo = h.localTipo ? h.localTipo.substring(0,4) : "GUIC";
-            li.innerText = `${tipo}. ${h.localNumero} - ${h.paciente}`;
-             });
-          })
-          .catch(err => console.log("Erro ao buscar chamada",err));
-            }
+.catch(err => console.log ("Erro ao buscar chamada", err));
+}
 
-            atualizar();
-            setInterval(atualizar, 2000);
-          </script>
+atualizar();
+setInterval(atualizar, 2000);
 
 
 
+
+</script>
 </body>
 </html>
