@@ -47,6 +47,60 @@ app.post("/login", (req, res) => {
   res.json(user);
 });
 
+
+ // CADASTRAR USUÁRIOS
+app.post("/usuarios", (req, res) => {
+  const db = readDB();
+
+  const { usuario, senha, tipo } = req.body;
+
+  if (!usuario || !senha || !tipo) {
+    return res.status(400).json({
+      erro: "Preencha todos os campos."
+    });
+  }
+
+  const existe = db.usuarios.some(
+    u => u.usuario.toLowerCase() === usuario.trim().toLowerCase()
+  );
+
+  if (existe) {
+    return res.status(409).json({
+      erro: "Este usuário já está cadastrado."
+    });
+  }
+
+  const novoUsuario = {
+    id: Date.now(),
+    usuario: usuario.trim(),
+    senha,
+    tipo
+  };
+
+  db.usuarios.push(novoUsuario);
+  writeDB(db);
+
+  res.status(201).json({
+    mensagem: "Usuário cadastrado com sucesso!",
+    usuario: novoUsuario.usuario,
+    tipo: novoUsuario.tipo
+  });
+});
+
+// LISTAR USUÁRIOS
+app.get("/usuarios", (req, res) => {
+  const db = readDB();
+
+  const usuarios = db.usuarios.map(u => ({
+    id: u.id,
+    usuario: u.usuario,
+    tipo: u.tipo
+  }));
+
+  res.json(usuarios);
+});
+
+
 // ATENDIMENTO
 app.post("/atendimento", (req, res) => {
   const db = readDB();
@@ -145,8 +199,58 @@ app.get("/medicacoes", (req, res) => {
   res.json(db.consultas);
 });
 
-//start
-const PORt = process.env.PORT || 3000;
-app.listen(PORt, () => {
-  console.log(`porta ${PORT}`);
+
+/* ===== CHAMADAS DA TV ===== */
+
+// Guarda a chamada atual e as últimas chamadas
+let chamadaAtual = null;
+let historicoChamadas = [];
+
+// Enviar uma chamada para a TV
+app.post("/tv/chamar", (req, res) => {
+  const { nome, paciente, localTipo, localNumero } = req.body;
+
+  const nomePaciente = nome || paciente;
+
+  if (!nomePaciente) {
+    return res.status(400).json({
+      erro: "Informe o nome do paciente."
+    });
+  }
+
+  chamadaAtual = {
+    id: Date.now(),
+    paciente: nomePaciente,
+    localTipo: localTipo || "GUICHÊ",
+    localNumero: localNumero || "---",
+    data: new Date().toISOString()
+  };
+
+  historicoChamadas.unshift(chamadaAtual);
+  historicoChamadas = historicoChamadas.slice(0, 4);
+
+  res.json({
+    mensagem: "Paciente chamado com sucesso.",
+    chamada: chamadaAtual
+  });
+});
+
+// Entregar a chamada atual e o histórico para a TV
+app.get("/tv/chamado", (req, res) => {
+  res.json({
+    chamada: chamadaAtual,
+    historico: historicoChamadas
+  });
+});
+
+
+app.get("/pacientes", (req, res) => {
+  const db = readDB();
+  res.json(db.pacientes || []);
+});
+
+
+// START
+app.listen(3000, () => {
+  console.log("🏥 Hospital Pro rodando em http://localhost:3000");
 });

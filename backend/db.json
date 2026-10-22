@@ -14,6 +14,30 @@
       "usuario": "atendimento",
       "senha": "123",
       "tipo": "atendimento"
+    },
+    {
+      "id": 1792596658769,
+      "usuario": "hugo",
+      "senha": "123",
+      "tipo": "paciente"
+    },
+    {
+      "id": 1792596695233,
+      "usuario": "pedro",
+      "senha": "123",
+      "tipo": "medico"
+    },
+    {
+      "id": 1792597673498,
+      "usuario": "Lula",
+      "senha": "123",
+      "tipo": "medico"
+    },
+    {
+      "id": 1792673662759,
+      "usuario": "haddad",
+      "senha": "123",
+      "tipo": "medico"
     }
   ],
   "pacientes": [
@@ -405,6 +429,17 @@
       "risco": "vermelho",
       "status": "aguardando_medico",
       "createdAt": "2026-08-13T14:11:18.009Z"
+    },
+    {
+      "id": 1792595815562,
+      "nome": "luis ",
+      "sintoma": "febre",
+      "temperatura": 39,
+      "alergia": "tomate",
+      "observacao": "obs;o paciente contem alergia a tomate",
+      "risco": "vermelho",
+      "status": "aguardando_medico",
+      "createdAt": "2026-10-21T15:16:55.562Z"
     }
   ],
   "consultas": [

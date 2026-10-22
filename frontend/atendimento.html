@@ -1,36 +1,79 @@
+
 <!DOCTYPE html>
-<html>
-<head><link rel="stylesheet" href="css/style.css"></head>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <title>Atendimento</title>
+</head>
 <body>
+
 <div class="container">
-<h2>Atendimento</h2>
+  <h2>Atendimento</h2>
 
-<input id="nome" placeholder="Nome">
-<input id="cpf" placeholder="CPF">
+  <input id="nome" type="text" placeholder="Nome" required>
+  <input id="cpf" type="text" placeholder="CPF" required>
 
-<select id="tipo">
-  <option>Convenio</option>
-  <option>Particular</option>
-</select>
+  <select id="tipo">
+    <option value="Convenio">Convênio</option>
+    <option value="Particular">Particular</option>
+  </select>
 
-<input type="file" id="foto">
+  <input type="file" id="foto" accept="image/*">
 
-<button onclick="cadastrar()">Cadastrar</button>
+  <button type="button" onclick="cadastrar()">Cadastrar</button>
 </div>
 
 <script>
-function cadastrar(){
- fetch("http://localhost:3000/atendimento",{
-  method:"POST",
-  headers:{"Content-Type":"application/json"},
-  body: JSON.stringify({
-    nome: nome.value,
-    cpf: cpf.value,
-    tipo: tipo.value
-  })
- });
- alert("Paciente enviado para triagem");
+async function cadastrar() {
+  const nome = document.getElementById("nome").value.trim();
+  const cpf = document.getElementById("cpf").value.trim();
+  const tipo = document.getElementById("tipo").value;
+  const arquivoFoto = document.getElementById("foto").files[0];
+
+  if (!nome || !cpf) {
+    alert("Preencha o nome e o CPF do paciente.");
+    return;
+  }
+
+  if (arquivoFoto && !arquivoFoto.type.startsWith("image/")) {
+    alert("Selecione um arquivo de imagem válido.");
+    return;
+  }
+
+  try {
+    const resposta = await fetch("/atendimento", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        nome: nome,
+        cpf: cpf,
+        tipo: tipo,
+        foto: null
+      })
+    });
+
+    if (!resposta.ok) {
+      const mensagem = await resposta.text();
+      throw new Error(mensagem || "Erro ao cadastrar paciente.");
+    }
+
+    alert("Paciente enviado para triagem");
+
+    document.getElementById("nome").value = "";
+    document.getElementById("cpf").value = "";
+    document.getElementById("tipo").selectedIndex = 0;
+    document.getElementById("foto").value = "";
+
+  } catch (erro) {
+    console.error("Erro:", erro);
+    alert("Não foi possível cadastrar o paciente. Verifique se o servidor está funcionando.");
+  }
 }
 </script>
+
 </body>
 </html>
