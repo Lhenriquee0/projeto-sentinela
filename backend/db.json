@@ -38,6 +38,12 @@
       "usuario": "haddad",
       "senha": "123",
       "tipo": "medico"
+    },
+    {
+      "id": 1793804050776,
+      "usuario": "luis henrique",
+      "senha": "123",
+      "tipo": "medico"
     }
   ],
   "pacientes": [
@@ -184,6 +190,14 @@
       "tipo": "Particular",
       "status": "triagem",
       "createdAt": "2026-08-20T13:58:30.535Z"
+    },
+    {
+      "id": 1793804096947,
+      "nome": "sabrina",
+      "cpf": "123.456.789-11",
+      "tipo": "Particular",
+      "status": "triagem",
+      "createdAt": "2026-11-04T14:54:56.947Z"
     }
   ],
   "triagens": [
@@ -440,6 +454,17 @@
       "risco": "vermelho",
       "status": "aguardando_medico",
       "createdAt": "2026-10-21T15:16:55.562Z"
+    },
+    {
+      "id": 1793803164104,
+      "nome": "gemini",
+      "sintoma": "diarreia",
+      "temperatura": 39,
+      "alergia": "",
+      "observacao": "",
+      "risco": "vermelho",
+      "status": "aguardando_medico",
+      "createdAt": "2026-11-04T14:39:24.104Z"
     }
   ],
   "consultas": [
